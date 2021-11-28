@@ -59,7 +59,8 @@ lazy val engineCommon = crossProject(JSPlatform, JVMPlatform)
       "org.typelevel" %%% "cats-effect" % catsVersion,
       "io.circe" %%% "circe-core" % circeVersion,
       "io.circe" %%% "circe-parser" % circeVersion,
-      "io.circe" %%% "circe-generic" % circeVersion
+      "io.circe" %%% "circe-generic" % circeVersion,
+      "org.scalameta" %% "munit" % "0.7.29" % Test
     ),
   )
 
