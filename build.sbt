@@ -60,8 +60,11 @@ lazy val engineCommon = crossProject(JSPlatform, JVMPlatform)
       "io.circe" %%% "circe-core" % circeVersion,
       "io.circe" %%% "circe-parser" % circeVersion,
       "io.circe" %%% "circe-generic" % circeVersion,
-      "org.scalameta" %% "munit" % "0.7.29" % Test
+      "org.scalameta" %% "munit" % "0.7.29" % Test,
+      "com.storm-enroute" %% "scalameter" % "0.21" % Test
     ),
+    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    logBuffered := false
   )
 
 lazy val engineHttp = project
