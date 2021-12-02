@@ -20,7 +20,10 @@ object PerformanceTest extends Bench.LocalTime {
     "Char => (Any => Double) => Double",
     "Boolean => A => Option[A]",
     "Boolean => B => A => Either[A, B]",
-    "IArray[Float] => (Float => Boolean) => Boolean"
+    "IArray[Float] => (Float => Boolean) => Boolean",
+    "F[A] => (A => F[B]) => F[B]",
+    "Seq[Int] => (Int => Seq[Float]) => Seq[Float]",
+    "Seq[Int] => (Int => Float) => Seq[AnyVal]"
   )
 
   performance of "Inkuire query" in {
