@@ -15,22 +15,54 @@ Most of the code concerning this is located in `engineHttp` module.
 REST API:
 - "/forSignature" <- takes a parameter `signature` which is a string being the queried Scala signature. e.g. "/forSignature?signature="Int=>Int"".
 - "/query" <- html with some example queries and a basic GUI to query the engine.
-(see [HttpServer.scala](/http/src/main/scala/org/virtuslab/inkuire/engine/http/http/HttpServer.scala))
+(see [HttpServer.scala](/http/src/main/scala/org/virtuslab/inkuire/http/HttpServer.scala))
 
 #### JavaScript worker integration
 
-Inkuire can be used as a JavaScript worker. This method is used in the official scaladoc for Scala 3. [link](https://dotty.epfl.ch/api/index.html) [code](https://github.com/lampepfl/dotty/tree/master/scaladoc)
+Inkuire can be used as a JavaScript worker. This method is used in the official scaladoc for Scala 3. [link](https://dotty.epfl.ch/api/index.html) [code](https://github.com/lampepfl/dotty/tree/main/scaladoc)
 Code specific for this integration method is located in `engineJs` module.
 
-Js worker can be used in a similar way as in [Scaladoc Searchbar](https://github.com/lampepfl/dotty/blob/master/scaladoc-js/main/src/searchbar/engine/InkuireJSSearchEngine.scala).
+Js worker can be used in a similar way as in [Scaladoc Searchbar](https://github.com/lampepfl/dotty/blob/main/scaladoc-js/main/src/searchbar/engine/InkuireJSSearchEngine.scala).
 
 #### Scala library
 
-*If you want to use this method, ping us on Twitter, Gitter or Mail, since Inkuire jars aren't published yet*
+Inkuire is published on maven central. https://mvnrepository.com/artifact/org.virtuslab/inkuire-engine
 
-As any Scala codebase, it can be included as a library dependency.
+It can be used in a similar way to [Main](/http/src/main/scala/org/virtuslab/inkuire/http/Main.scala).
 
-Then Inkuire can be used in a similar way to [Main](/http/src/main/scala/org/virtuslab/inkuire/engine/http/Main.scala).
+The most commonly used classes can be imported using:
+
+```scala
+import org.virtuslab.inkuire.engine.api._
+```
+
+Some other useful classes (not included in the api import):
+- `org.virtuslab.inkuire.engine.impl.service.EngineModelSerializers`
+
+Usually the easiest way to use Inkuire is to use [`InkuireRunner`](/engine/shared/src/main/scala/org/virtuslab/inkuire/engine/api/InkuireRunner.scala).
+This requires implementing two handler classes:
+- [`InputHandler`](/engine/shared/src/main/scala/org/virtuslab/inkuire/engine/api/InputHandler.scala)
+- [`OutputHandler`](/engine/shared/src/main/scala/org/virtuslab/inkuire/engine/api/OutputHandler.scala)
+
+`InputHandler` only requires one method:
+
+```scala
+def readInput(args: Seq[String])(implicit ec: ExecutionContext): FutureExcept[InkuireDb]
+```
+
+This method is responsible for reading/fetching InkuireDb, so that it can be used by the engine. The result should be wrapped in `FutureExcept` monad. It is a custom monad, but can be thought of as `EitherT[Future, String, _]`.
+
+`OutputHandler` also only requires one method:
+
+```scala
+def serveOutput(env: Env)(implicit ec: ExecutionContext): Future[Unit]
+```
+
+This method is responsible for querying for search phrases and outputting them to the user. It takes as argument `env: Env`, which is an environment containing all services needed for `Inkuire` to work. In big majority of use cases the use of env will only require using `run`.
+
+```scala
+def run(signature: String): Either[String, ResultFormat]
+```
 
 ### Data format
 
